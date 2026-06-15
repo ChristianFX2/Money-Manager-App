@@ -1,5 +1,5 @@
 const STORAGE_KEY = "mis-gastos-state-v1";
-const APP_VERSION = "2.4 local";
+const APP_VERSION = "2.5 local";
 const DEFAULT_CATEGORIES = ["Comida", "Transporte", "Otros"];
 
 const state = {

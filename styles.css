@@ -913,32 +913,13 @@ textarea:focus {
 }
 
 .nav-item span {
-  font-size: 1.25rem;
+  font-size: 1.48rem;
   line-height: 1;
 }
 
-.nav-item.active:not(.nav-add) {
+.nav-item.active {
   background: #eaf1ff;
   color: var(--blue);
-}
-
-.nav-add {
-  width: 62px;
-  height: 62px;
-  background: var(--blue);
-  color: #fff;
-  box-shadow: 0 16px 34px rgba(23, 98, 255, 0.34);
-  transform: translateY(-17px);
-}
-
-.nav-add span {
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.nav-add.active {
-  background: var(--blue);
-  color: #fff;
 }
 
 .toast {
