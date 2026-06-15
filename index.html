@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f8fb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Mis Gastos" />
+    <title>Mis Gastos</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/icon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell" aria-live="polite">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="currentMonthLabel">Este mes</p>
+          <h1>Mis Gastos</h1>
+        </div>
+        <div class="avatar" aria-hidden="true">S/</div>
+      </header>
+
+      <section class="view active" id="view-home" data-title="Inicio">
+        <div class="hero-card">
+          <div class="hero-content">
+            <div class="hero-icon" aria-hidden="true">
+              <img src="./assets/icons/billetera_saldo_restante.svg" alt="" width="42" height="42" />
+            </div>
+            <p class="muted">Saldo restante</p>
+            <strong id="homeBalance">S/ 0.00</strong>
+          </div>
+          <span id="budgetBadge" class="status-pill">Sin meta</span>
+        </div>
+
+        <div class="summary-grid">
+          <article class="metric-card income">
+            <div class="metric-icon" aria-hidden="true">
+              <img src="./assets/icons/ingresos_flecha_subida.svg" alt="" width="34" height="34" />
+            </div>
+            <div>
+              <span>Ingresos</span>
+              <strong id="homeIncome">S/ 0.00</strong>
+            </div>
+          </article>
+          <article class="metric-card expense">
+            <div class="metric-icon" aria-hidden="true">
+              <img src="./assets/icons/gastos_flecha_bajada.svg" alt="" width="34" height="34" />
+            </div>
+            <div>
+              <span>Gastos</span>
+              <strong id="homeExpense">S/ 0.00</strong>
+            </div>
+          </article>
+        </div>
+
+        <article class="card home-card budget-card">
+          <div class="card-row">
+            <div class="soft-icon blue" aria-hidden="true">
+              <img src="./assets/icons/presupuesto_pie_chart.svg" alt="" width="30" height="30" />
+            </div>
+            <div>
+              <h2>Presupuesto usado</h2>
+              <p class="muted" id="homeBudgetText">Define tu presupuesto mensual en Metas.</p>
+            </div>
+            <strong id="homeBudgetPercent">0%</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="homeBudgetBar"></div>
+          </div>
+        </article>
+
+        <article class="card home-card recent-card">
+          <div class="card-row">
+            <div class="soft-icon blue" aria-hidden="true">
+              <img src="./assets/icons/ultimos_movimientos_reloj.svg" alt="" width="30" height="30" />
+            </div>
+            <h2>Últimos movimientos</h2>
+            <button class="text-button arrow-link" data-target-tab="history" type="button">Ver todo <span aria-hidden="true">›</span></button>
+          </div>
+          <div class="movement-list compact" id="recentMovements"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-add" data-title="Agregar">
+        <div class="segmented-control" role="tablist" aria-label="Tipo de movimiento">
+          <button class="segment active" id="expenseTab" type="button" data-form="expense">Gasto</button>
+          <button class="segment" id="incomeTab" type="button" data-form="income">Ingreso</button>
+        </div>
+
+        <form class="card form-card active" id="expenseForm">
+          <h2>Agregar gasto</h2>
+          <label>
+            Monto
+            <input
+              autocomplete="off"
+              data-money-input
+              inputmode="numeric"
+              name="amount"
+              placeholder="S/ 0.00"
+              required
+              type="text"
+            />
+          </label>
+          <label>
+            Categoría
+            <select name="category" required>
+              <option value="Comida">Comida</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Otros">Otros</option>
+            </select>
+          </label>
+          <label>
+            Fecha
+            <input name="date" required type="date" />
+          </label>
+          <label>
+            Método de pago
+            <select name="payment" required>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Yape">Yape</option>
+              <option value="Tarjeta">Tarjeta</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </label>
+          <label>
+            Descripción
+            <textarea name="description" placeholder="Ej. almuerzo, taxi, mercado"></textarea>
+          </label>
+          <button class="primary-button" type="submit">Guardar gasto</button>
+        </form>
+
+        <form class="card form-card" id="incomeForm">
+          <h2>Agregar ingreso</h2>
+          <label>
+            Monto
+            <input
+              autocomplete="off"
+              data-money-input
+              inputmode="numeric"
+              name="amount"
+              placeholder="S/ 0.00"
+              required
+              type="text"
+            />
+          </label>
+          <label>
+            Fuente del ingreso
+            <input name="source" placeholder="Ej. sueldo, venta, freelance" required type="text" />
+          </label>
+          <label>
+            Fecha
+            <input name="date" required type="date" />
+          </label>
+          <label>
+            Descripción
+            <textarea name="description" placeholder="Detalle opcional"></textarea>
+          </label>
+          <button class="primary-button" type="submit">Guardar ingreso</button>
+        </form>
+      </section>
+
+      <section class="view" id="view-history" data-title="Historial">
+        <article class="card">
+          <div class="card-row">
+            <div>
+              <h2>Movimientos</h2>
+              <p class="muted" id="historyCount">0 registrados</p>
+            </div>
+            <button class="ghost-button" id="clearAllButton" type="button">Limpiar</button>
+          </div>
+          <div class="filter-grid" aria-label="Filtros de historial">
+            <label>
+              Mes
+              <select id="historyMonthFilter">
+                <option value="current">Mes actual</option>
+                <option value="all">Todos</option>
+              </select>
+            </label>
+            <label>
+              Tipo
+              <select id="historyTypeFilter">
+                <option value="all">Todos</option>
+                <option value="expense">Gastos</option>
+                <option value="income">Ingresos</option>
+              </select>
+            </label>
+            <label>
+              Método
+              <select id="historyPaymentFilter">
+                <option value="all">Todos</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Yape">Yape</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </label>
+            <label>
+              Categoría
+              <select id="historyCategoryFilter">
+                <option value="all">Todas</option>
+              </select>
+            </label>
+          </div>
+          <div class="movement-list" id="historyList"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-stats" data-title="Estadísticas">
+        <div class="summary-grid">
+          <article class="metric-card">
+            <span>Gasto más alto</span>
+            <strong id="highestExpense">S/ 0.00</strong>
+          </article>
+          <article class="metric-card">
+            <span>Promedio diario</span>
+            <strong id="dailyAverage">S/ 0.00</strong>
+          </article>
+        </div>
+
+        <article class="card">
+          <h2>Categoría donde más gastas</h2>
+          <p class="big-stat" id="topCategory">Sin gastos</p>
+        </article>
+
+        <article class="card">
+          <div class="card-row">
+            <h2>Gasto por categoría</h2>
+            <span class="muted" id="categoryTotalLabel">S/ 0.00</span>
+          </div>
+          <div class="category-list" id="categoryStats"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-goals" data-title="Metas">
+        <form class="card" id="budgetForm">
+          <h2>Presupuesto mensual</h2>
+          <label>
+            Meta del mes
+            <input inputmode="decimal" id="budgetInput" placeholder="0.00" type="number" min="0" step="0.01" />
+          </label>
+          <button class="primary-button" type="submit">Guardar presupuesto</button>
+        </form>
+
+        <article class="card goal-card">
+          <div class="card-row">
+            <div>
+              <h2>Progreso</h2>
+              <p class="muted" id="goalDetail">Sin presupuesto mensual.</p>
+            </div>
+            <strong id="goalPercent">0%</strong>
+          </div>
+          <div class="progress-track large">
+            <div class="progress-fill" id="goalBar"></div>
+          </div>
+          <p class="alert hidden" id="budgetAlert">Alerta: ya usaste más del 80% de tu presupuesto.</p>
+        </article>
+
+        <article class="card settings-card">
+          <div>
+            <h2>Configuración y respaldo</h2>
+            <p class="muted">Tus datos se guardan en este navegador con localStorage. Haz backups si cambias de equipo o limpias caché.</p>
+          </div>
+          <div class="settings-actions">
+            <button class="primary-button" id="exportJsonButton" type="button">Exportar backup JSON</button>
+            <button class="ghost-button action-button" id="importJsonButton" type="button">Importar backup JSON</button>
+            <button class="ghost-button action-button" id="exportCsvButton" type="button">Exportar CSV</button>
+          </div>
+          <input accept="application/json,.json" class="visually-hidden" id="importJsonInput" type="file" />
+          <div class="pwa-panel">
+            <div>
+              <h2>App instalada</h2>
+              <p class="muted" id="pwaStatusText">Revisando disponibilidad de instalación...</p>
+            </div>
+            <button class="ghost-button action-button" id="installAppButton" type="button" disabled>Instalar app</button>
+            <p class="settings-note">Para instalarla como PWA, abre la app desde un servidor local o web. En file:// no se activa el service worker.</p>
+          </div>
+          <div class="category-manager">
+            <div>
+              <h2>Categorías</h2>
+              <p class="muted">Agrega o elimina categorías para ordenar mejor tus gastos.</p>
+            </div>
+            <form class="category-form" id="categoryForm">
+              <label>
+                Nueva categoría
+                <input id="categoryNameInput" maxlength="30" placeholder="Ej. Casa" type="text" />
+              </label>
+              <button class="ghost-button action-button" type="submit">Agregar</button>
+            </form>
+            <div class="category-manager-list" id="categoryManagerList"></div>
+          </div>
+          <div class="settings-danger">
+            <button class="ghost-button action-button" id="resetBudgetButton" type="button">Resetear presupuesto</button>
+            <button class="danger-button" id="deleteAllDataButton" type="button">Borrar todos los datos</button>
+          </div>
+          <div class="settings-info">
+            <span>Versión</span>
+            <strong id="appVersionLabel">Mis Gastos v1.3 local</strong>
+          </div>
+          <p class="settings-note">Importar un backup reemplazará los datos actuales después de confirmar.</p>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navegación principal">
+      <button class="nav-item active" type="button" data-tab="home" aria-label="Inicio">
+        <span aria-hidden="true">⌂</span>
+        Inicio
+      </button>
+      <button class="nav-item" type="button" data-tab="add" aria-label="Agregar">
+        <span aria-hidden="true">＋</span>
+        Agregar
+      </button>
+      <button class="nav-item" type="button" data-tab="history" aria-label="Historial">
+        <span aria-hidden="true">≡</span>
+        Historial
+      </button>
+      <button class="nav-item" type="button" data-tab="stats" aria-label="Estadísticas">
+        <span aria-hidden="true">◔</span>
+        Stats
+      </button>
+      <button class="nav-item" type="button" data-tab="goals" aria-label="Metas">
+        <span aria-hidden="true">◎</span>
+        Metas
+      </button>
+    </nav>
+
+    <div class="toast" id="toast" role="status"></div>
+    <div class="app-banner hidden" id="appBanner" role="status">
+      <span id="appBannerText"></span>
+      <button class="banner-button hidden" id="appBannerButton" type="button">Actualizar app</button>
+    </div>
+
+    <div class="modal-backdrop hidden" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+      <form class="modal-card" id="editForm">
+        <div class="card-row">
+          <div>
+            <p class="eyebrow" id="editModalType">Movimiento</p>
+            <h2 id="editModalTitle">Editar movimiento</h2>
+          </div>
+          <button class="icon-button" id="editCloseButton" type="button" aria-label="Cerrar edición">×</button>
+        </div>
+
+        <label>
+          Monto
+          <input
+            autocomplete="off"
+            data-money-input
+            inputmode="numeric"
+            name="amount"
+            placeholder="S/ 0.00"
+            required
+            type="text"
+          />
+        </label>
+
+        <label id="editCategoryField">
+          Categoría
+          <select name="category">
+            <option value="Comida">Comida</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </label>
+
+        <label id="editSourceField">
+          Fuente del ingreso
+          <input name="source" placeholder="Ej. sueldo, venta, freelance" type="text" />
+        </label>
+
+        <label>
+          Fecha
+          <input name="date" required type="date" />
+        </label>
+
+        <label id="editPaymentField">
+          Método de pago
+          <select name="payment">
+            <option value="Efectivo">Efectivo</option>
+            <option value="Yape">Yape</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </label>
+
+        <label>
+          Descripción
+          <textarea name="description" placeholder="Detalle opcional"></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button class="ghost-button" id="editCancelButton" type="button">Cancelar</button>
+          <button class="primary-button" type="submit">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

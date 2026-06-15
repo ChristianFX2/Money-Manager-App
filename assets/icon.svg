@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mis Gastos">
+  <rect width="512" height="512" rx="112" fill="#2563eb"/>
+  <path d="M128 183c0-35 28-63 63-63h130c35 0 63 28 63 63v146c0 35-28 63-63 63H191c-35 0-63-28-63-63V183Z" fill="#ffffff"/>
+  <path d="M171 203h170M171 255h170M171 307h96" stroke="#2563eb" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="336" cy="320" r="50" fill="#16a34a"/>
+  <path d="M336 292v56M308 320h56" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
+</svg>
